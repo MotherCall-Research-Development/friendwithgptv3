@@ -5,7 +5,7 @@
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  Website & Mobile starter project
+  Friend with ChatGPT v3
 
 # Transform section specifies one or more macros that AWS CloudFormation uses to process your template
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
@@ -122,3 +122,20 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
+  scheduledEventLoggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/handlers/scheduled-event-logger.scheduledEventLoggerHandler
+      Runtime: nodejs14.x
+      Description: A Lambda function that logs the payload of scheduled events.
+      MemorySize: 128
+      Timeout: 60
+      Policies:
+        # Give Lambda basic execution Permission to the scheduledEventLogger
+        - AWSLambdaBasicExecutionRole
+      Events:
+        SimpleCWEEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 * * * ? *)
