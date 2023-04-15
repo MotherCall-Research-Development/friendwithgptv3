@@ -24,10 +24,10 @@ Globals:
 Parameters:
   AppId:
     Type: String
+
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
-
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
   deleteByIdFunction:
@@ -122,9 +122,6 @@ Resources:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
-        - SQSPollerPolicy: 
-            QueueName: !Ref Queue
-
       Environment:
         Variables:
           # Make table name accessible as environment variable from function code during execution

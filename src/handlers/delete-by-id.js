@@ -27,4 +27,3 @@ exports.deleteByIdHandler = async (event) => {
 
   return response;
 };
-//
