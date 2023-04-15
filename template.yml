@@ -166,36 +166,25 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 * * * ? *)
-  MySQSQueueFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ./
-      Handler: src/handlers/sqs.sqsHandler
-      Runtime: nodejs12.x
-      Events:
-        MySQSEvent:
-          Type: SQS
-          Properties:
-            Queue: !GetAtt MySqsQueue.Arn
-            BatchSize: 10
-  MySqsQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub ${AWS::StackName}-MySqsQueue
-      VisibilityTimeout: 300
-      MessageRetentionPeriod: 1209600
-      ReceiveMessageWaitTimeSeconds: 0
-      RedrivePolicy:
-        deadLetterTargetArn: !GetAtt MySqsQueueDLQ.Arn
-        maxReceiveCount: 5
-  # add s3 
-  MyS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${AWS::StackName}-MyS3Bucket
-      AccessControl: Private
-      VersioningConfiguration:
-        Status: Enabled
+  # this lambda function is used to send message to sqs queue
+  # MySqsQueue:
+  #   Type: AWS::SQS::Queue
+  #   Properties:
+  #     QueueName: !Sub ${AWS::StackName}-MySqsQueue
+  #     VisibilityTimeout: 300
+  #     MessageRetentionPeriod: 1209600
+  #     ReceiveMessageWaitTimeSeconds: 0
+  #     RedrivePolicy:
+  #       deadLetterTargetArn: !GetAtt MySqsQueueDLQ.Arn
+  #       maxReceiveCount: 5
+  # # add s3 
+  # MyS3Bucket:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     BucketName: !Sub ${AWS::StackName}-MyS3Bucket
+  #     AccessControl: Private
+  #     VersioningConfiguration:
+  #       Status: Enabled
   
   
   
