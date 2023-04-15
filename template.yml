@@ -188,6 +188,14 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt MySqsQueueDLQ.Arn
         maxReceiveCount: 5
+  # add s3 
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-MyS3Bucket
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
   
   
   
