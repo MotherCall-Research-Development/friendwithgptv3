@@ -11,11 +11,12 @@ exports.uploadFileToS3Handler = async (event, context) => {
     "aws-ap-southeast-1-162229977653-friendwithgptv3-simpleappbucket";
   // upload file to s3 , in body  method post
   try {
-    const { filename, data } = extractFile(event);
+    // const { filename, data } = extractFile(event);
+    const data = Buffer.from(event.body, "base64");
     await s3
       .putObject({
         Bucket: bucketName,
-        Key: filename,
+        Key: uuid(),
         ACL: "public-read",
         Body: data,
       })
@@ -36,6 +37,7 @@ exports.uploadFileToS3Handler = async (event, context) => {
 };
 
 function extractFile(event) {
+  console.log("event.headers", event.headers);
   const boundary = parseMultipart.getBoundary(event.headers["content-type"]);
   const parts = parseMultipart.Parse(
     Buffer.from(event.body, "base64"),
