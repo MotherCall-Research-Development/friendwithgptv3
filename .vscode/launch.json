@@ -3,6 +3,23 @@
         {
             "type": "aws-sam",
             "request": "direct-invoke",
+            "name": "API friendwithgptv3:uploadFileToS3",
+            "invokeTarget": {
+                "target": "api",
+                "templatePath": "${workspaceFolder}/template.yml",
+                "logicalId": "uploadFileToS3"
+            },
+            "api": {
+                "path": "/",
+                "httpMethod": "get",
+                "payload": {
+                    "json": {}
+                }
+            }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
             "name": "friendwithgptv3:scheduledEventLoggerFunction",
             "invokeTarget": {
                 "target": "template",

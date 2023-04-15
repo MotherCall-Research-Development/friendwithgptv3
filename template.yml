@@ -153,6 +153,26 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 * * * ? *)
+  # upload file to s3 serverless
+  uploadFileToS3:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/handlers/upload-file-to-s3.uploadFileToS3Handler
+      Runtime: nodejs14.x
+      Description: A Lambda function that uploads a file to S3 bucket.
+      MemorySize: 128
+      Timeout: 60
+      Policies:
+        # Give full access Permissions to the S3 Bucket
+        - S3FullAccessPolicy:
+            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: POST
   s3JsonLoggerFunction:
     Type: AWS::Serverless::Function
     Properties:
