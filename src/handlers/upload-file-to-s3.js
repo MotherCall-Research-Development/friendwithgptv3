@@ -7,7 +7,7 @@ const s3 = new AWS.S3();
 AWS.config.update({ region: "ap-southeast-1" });
 exports.uploadFileToS3Handler = async (event, context) => {
   const bucketName =
-    "aws-ap-southeast-1-162229977653-friendwithgptv3-friendGptBucket";
+    "aws-ap-southeast-1-162229977653-friendwithgptv3-simpleappbucket";
   // upload file to s3 , in body  method post
   const fileData = Buffer.from(event.body.file, "base64");
   const fileName = uuid();

@@ -10,8 +10,6 @@ Globals:
 Parameters:
   AppId:
     Type: String
-    Description: The application ID
-    Default: chatgpt
 Resources:
     
   deleteByIdFunction:
@@ -146,7 +144,7 @@ Resources:
       Policies:
         # Give full access Permissions to the S3 Bucket
         - S3FullAccessPolicy:
-            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-friendGptBucket
+            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
       Events:
         Api:
           Type: Api
@@ -166,22 +164,22 @@ Resources:
       Policies:
         # Give full access Permissions to the S3 Bucket
         - S3FullAccessPolicy:
-            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-friendGptBucket
+            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
       Events:
-        friendGptBucketEvent:
+        simpleappbucketEvent:
           Type: S3
           Properties:
-            Bucket: !Ref friendGptBucket
+            Bucket: !Ref simpleappbucket
             Events: s3:ObjectCreated:*
             Filter:
               S3Key:
                 Rules:
                   - Name: suffix
                     Value: ".json"
-  friendGptBucket:
+  simpleappbucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-friendGptBucket
+      BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
       CorsConfiguration:
         CorsRules:
         - AllowedHeaders:
