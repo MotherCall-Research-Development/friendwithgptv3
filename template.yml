@@ -74,7 +74,6 @@ Resources:
             TableName: !Ref SampleTable
       Environment:
         Variables:
-
           SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:

@@ -3,23 +3,48 @@
 // Create a client to read objects from S3
 const AWS = require("aws-sdk");
 const { v4: uuid } = require("uuid");
+const parseMultipart = require("parse-multipart");
 const s3 = new AWS.S3();
 AWS.config.update({ region: "ap-southeast-1" });
 exports.uploadFileToS3Handler = async (event, context) => {
   const bucketName =
     "aws-ap-southeast-1-162229977653-friendwithgptv3-simpleappbucket";
   // upload file to s3 , in body  method post
-  const fileData = Buffer.from(event.body.file, "base64");
-  const fileName = uuid();
+  try {
+    const { filename, data } = extractFile(event);
+    await s3
+      .putObject({
+        Bucket: bucketName,
+        Key: filename,
+        ACL: "public-read",
+        Body: data,
+      })
+      .promise();
 
-  const s3Params = {
-    Bucket: bucketName,
-    Key: fileName,
-    Body: fileData,
-  };
-  await s3.putObject(s3Params).promise();
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "File uploaded successfully" }),
-  };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        link: `https://${BUCKET}.s3.amazonaws.com/${filename}`,
+      }),
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: err.stack }),
+    };
+  }
 };
+
+function extractFile(event) {
+  const boundary = parseMultipart.getBoundary(event.headers["content-type"]);
+  const parts = parseMultipart.Parse(
+    Buffer.from(event.body, "base64"),
+    boundary
+  );
+  const [{ filename, data }] = parts;
+
+  return {
+    filename,
+    data,
+  };
+}
