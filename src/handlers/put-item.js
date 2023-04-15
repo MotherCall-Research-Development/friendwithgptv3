@@ -1,6 +1,7 @@
 // Create clients and set shared const values outside of the handler
 
 // Create a DocumentClient that represents the query to add an item
+const { SQS } = require("aws-sdk");
 const dynamodb = require("aws-sdk/clients/dynamodb");
 const { v4: uuid } = require("uuid");
 const docClient = new dynamodb.DocumentClient();
@@ -18,6 +19,7 @@ exports.putItemHandler = async (event) => {
       `postMethod only accepts POST method, you tried: ${httpMethod} method.`
     );
   }
+  // use sqs to send message to the queue
 
   console.log("received:", JSON.stringify(event));
   // Get id and name from the body of the request
