@@ -6,7 +6,8 @@ const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
 exports.uploadFileToS3Handler = async (event, context) => {
-  const bucketName = event.Records[0].s3.bucket.name;
+  const bucketName =
+    "aws-ap-southeast-1-162229977653-friendwithgptv3-simpleappbucket";
   // upload file to s3 , in body  method post
   console.log("bucketName", bucketName);
   const fileData = Buffer.from(event.body, "base64");
