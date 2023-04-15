@@ -24,7 +24,6 @@ Globals:
 Parameters:
   AppId:
     Type: String
-
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -166,25 +165,3 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 * * * ? *)
-  # this lambda function is used to send message to sqs queue
-  # MySqsQueue:
-  #   Type: AWS::SQS::Queue
-  #   Properties:
-  #     QueueName: !Sub ${AWS::StackName}-MySqsQueue
-  #     VisibilityTimeout: 300
-  #     MessageRetentionPeriod: 1209600
-  #     ReceiveMessageWaitTimeSeconds: 0
-  #     RedrivePolicy:
-  #       deadLetterTargetArn: !GetAtt MySqsQueueDLQ.Arn
-  #       maxReceiveCount: 5
-  # # add s3 
-  # MyS3Bucket:
-  #   Type: AWS::S3::Bucket
-  #   Properties:
-  #     BucketName: !Sub ${AWS::StackName}-MyS3Bucket
-  #     AccessControl: Private
-  #     VersioningConfiguration:
-  #       Status: Enabled
-  
-  
-  
