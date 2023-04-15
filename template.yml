@@ -1,31 +1,19 @@
-# This is the SAM template that represents the architecture of your serverless application
-# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
 
-# The AWSTemplateFormatVersion identifies the capabilities of the template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   Friend with ChatGPT v3
-
-# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform: AWS::Serverless-2016-10-31
-
-# Shared configuration for all resources, more in
-# https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-
     PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/${AppId}-${AWS::Region}-PermissionsBoundary'
 
 Parameters:
   AppId:
     Type: String
-
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+    Description: The application ID
+    Default: chatgpt
 Resources:
-
+    
   deleteByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -49,6 +37,7 @@ Resources:
           Properties:
             Path: /{id}
             Method: DELETE
+            
   # This is a Lambda function config associated with the source code: get-all-items.js
   getAllItemsFunction:
     Type: AWS::Serverless::Function
@@ -60,12 +49,10 @@ Resources:
       Timeout: 60
       Description: A  HTTP get method to get all converation from a DynamoDB table.
       Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
       Environment:
         Variables:
-          # Make table name accessible as environment variable from function code during execution
           SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:
@@ -73,6 +60,7 @@ Resources:
           Properties:
             Path: /
             Method: GET
+
   getByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -83,12 +71,12 @@ Resources:
       Timeout: 60
       Description: A  HTTP get method to get converation  by id from a DynamoDB table.
       Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
+
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
       Environment:
         Variables:
-          # Make table name accessible as environment variable from function code during execution
+
           SAMPLE_TABLE: !Ref SampleTable
       Events:
         Api:
@@ -96,10 +84,6 @@ Resources:
           Properties:
             Path: /{id}
             Method: GET
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # This is a Lambda function config associated with the source code: put-item.js
   putItemFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -123,10 +107,6 @@ Resources:
           Properties:
             Path: /
             Method: POST
-  # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
-
-  # DynamoDB table to store item: {id: <ID>, name: <NAME>}
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -166,13 +146,14 @@ Resources:
       Policies:
         # Give full access Permissions to the S3 Bucket
         - S3FullAccessPolicy:
-            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
+            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-friendGptBucket
       Events:
         Api:
           Type: Api
           Properties:
             Path: /upload
             Method: POST
+
   s3JsonLoggerFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -185,21 +166,31 @@ Resources:
       Policies:
         # Give full access Permissions to the S3 Bucket
         - S3FullAccessPolicy:
-            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
+            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-friendGptBucket
       Events:
-        simpleappbucketEvent:
+        friendGptBucketEvent:
           Type: S3
           Properties:
-            Bucket: !Ref simpleappbucket
+            Bucket: !Ref friendGptBucket
             Events: s3:ObjectCreated:*
             Filter:
               S3Key:
                 Rules:
                   - Name: suffix
                     Value: ".json"
-  simpleappbucket:
+  friendGptBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
+      BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-friendGptBucket
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+            - "*"
+          AllowedMethods:
+            - GET
+            - PUT
+            - HEAD
+          AllowedOrigins:
+            - "*"
 
   
