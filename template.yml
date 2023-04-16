@@ -189,5 +189,45 @@ Resources:
             - HEAD
           AllowedOrigins:
             - "*"
+  # cognito handle register
+  cognitoHandleRegister:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/handlers/cognito-handle-register.cognitoHandleRegisterHandler
+      Runtime: nodejs14.x
+      Description: A Lambda function that handle register user.
+      MemorySize: 128
+      Timeout: 60
+      Policies:
+        # Give full access Permissions to the S3 Bucket
+        - S3FullAccessPolicy:
+            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /register
+            Method: POST
+  # cognito handle login
+  cognitoHandleLogin:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: src/handlers/cognito-handle-login.cognitoHandleLoginHandler
+      Runtime: nodejs14.x
+      Description: A Lambda function that handle login user.
+      MemorySize: 128
+      Timeout: 60
+      Policies:
+        # Give full access Permissions to the S3 Bucket
+        - S3FullAccessPolicy:
+            BucketName: !Sub aws-${AWS::Region}-${AWS::AccountId}-${AppId}-simpleappbucket
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: POST
 
   
