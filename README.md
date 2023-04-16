@@ -6,7 +6,7 @@
 </ul>
 
 <h2>How to run</h2>
-<code>yarn </code>
-<code>Install AWS CLI  </code>
-<code>Run</code>
+<code>yarn </code> <br/>
+<code>Install AWS CLI  </code><br/>
+<code>Run</code><br/>
 
